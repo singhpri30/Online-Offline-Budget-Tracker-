@@ -47,11 +47,20 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
   <script src="assets/js/index.js"></script>
   <script>
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("service-worker.js").then(reg => {
-          console.log("We found your service worker file!", reg);
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker
+        .register('./service-worker.js')
+        .then(registration => navigator.serviceWorker.ready)
+        .then(registration => { // register sync
+          document.getElementById('add-btn').addEventListener('click', () => {
+            registration.sync.register('budgetData').then(() => {
+              console.log('Sync registered');
+            });
+          });
         });
+    } else {
+      document.getElementById('add-btn').addEventListener('click', () => {
+        console.log('Fallback to fetch the image as usual');
       });
     }
   </script>
